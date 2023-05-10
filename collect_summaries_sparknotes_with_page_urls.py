@@ -1,24 +1,19 @@
-'''https://gist.github.com/marcosan93/81514e6b3bad0232de8c8f225f3af74b
-https://towardsdatascience.com/how-to-collect-data-from-any-website-cb8fad9e9ec5
-
-soup.findAll("div", class_="feeditemcontent cxfeeditemcontent")
-
-So, If I want to get all div tags of class header <div class="header">
+'''referenced https://gist.github.com/marcosan93/81514e6b3bad0232de8c8f225f3af74b
 '''
 from bs4 import BeautifulSoup as bs
 import time
 import requests
 import random
 import os
-booksum_cleaned_summaries = ['adambede', 'anneofgreengables', 'alicesadventuresinwonderland']
+
 directory = "/Users/psin/Desktop/cos401/cos401_final_proj/booksum/scripts/finished_summaries/sparknotes/thehouseofthesevengables/"
 if not os.path.exists(directory):
     os.mkdir(directory)
+
 book_name = "twg_"
+
 # List of URLs
-# 13
 urls = [f"https://www.sparknotes.com/lit/sevengables/section{i}/" for i in range(1,12)]
-# urls = ["https://www.sparknotes.com/lit/the-westing-game/chapter-summaries/"]
 
 # List for Randomizing our request rate
 rate = [i/10 for i in range(10)]
@@ -72,13 +67,10 @@ for url in urls:
             # stop when we get to the Analysis section
 
             if tag.has_attr('style'):
-                # print("popped ===", tag_str)
                 content.pop()
             elif tag.name == 'h3' and 'Analysis' in tag_str:
-                # print("analysis ===", tag_str)
                 content.append("REMOVE ANALYSIS")
             elif not tag_str.startswith("Chapters"):
-                # print("appended ===", tag_str)
                 content.append(tag_str)
             else:
                 print("elsed ===", tag_str)
@@ -88,15 +80,11 @@ for url in urls:
     
     idx = 0
     # combine all paragraphs that occur after summary heading, until encounter next section or end of list
-    # print("before while loop ===", content)
     while idx < len(content):
         item = content[idx]
-        # print("item ===", item)
         if item == "REMOVE ANALYSIS":
             break
         if item.startswith("Summary"):
-            # summary_des = item.replace(':', '')
-            # summary_des = summary_des.replace(' ', '_')
             summary_des = "section_" + str(ch_count) + "_part_0"
             filename = directory + summary_des + ".txt"
             f = open(filename, "w")
